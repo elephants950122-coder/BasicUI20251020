@@ -1,6 +1,7 @@
 package tw.edu.pu.csim.tcyang.basicui
 
 
+import android.R.attr.id
 import android.app.Activity
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -31,7 +32,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -84,6 +87,8 @@ fun Main(modifier: Modifier = Modifier) {
 
     //設定音樂
     var mper = MediaPlayer.create(context, R.raw.fly)
+
+    var currentImageIndex by remember { mutableStateOf(0) }
 
     // 使用 DisposableEffect 來管理 MediaPlayer 的生命週期
     // 當 Main Composable 離開組合時，會執行 onDispose 區塊
@@ -229,7 +234,7 @@ fun Main(modifier: Modifier = Modifier) {
                 activity?.finish()
                 },
                 // 設定按鈕顏色為亮藍色
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00BFFF)),
+                colors = buttonColors(containerColor = Color(0xFF00BFFF)),
                 //形狀：將元素的每個角落「切掉」一個直角
                 shape = CutCornerShape(10),
                 //藍色框線
@@ -241,5 +246,19 @@ fun Main(modifier: Modifier = Modifier) {
             }
         }
 
+        Button(
+            onClick = {
+                currentImageIndex = (currentImageIndex + 1) % Animals.size
+
+                Toast.makeText(
+                    context,
+                    "按鈕動物已變更!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        ){
+            Image(painterResource(id = Animals[currentImageIndex]),
+                contentDescription ="animal icon")
+        }
     }
 }
